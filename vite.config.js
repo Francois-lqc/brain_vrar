@@ -3,7 +3,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import glsl from 'vite-plugin-glsl';
 
 export default defineConfig({
-    // base: "/brain\_vrar",
+    base: "/brain_vrar",
     clearScreen: false,
     optimizeDeps: {
         esbuildOptions: {
