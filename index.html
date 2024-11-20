@@ -7,6 +7,14 @@
   <title>three_vite</title>
   <link rel="icon" href="favicon.png">
   <link rel="stylesheet" href="./main.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./assets/js/three-module.js",
+        "three/examples/": "./assets/js/examples/",
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -14,7 +22,7 @@
   <!--
   <script src="./jsm/libs/ammo.wasm.js"></script>
   -->
- <script type="module" src="./main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 
 </html>

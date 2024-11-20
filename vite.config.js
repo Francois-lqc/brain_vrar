@@ -3,8 +3,9 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import glsl from 'vite-plugin-glsl';
 
 export default defineConfig({
-    base: "/brain_vrar",
+
     clearScreen: false,
+    base: "/brain_vrar/",
     optimizeDeps: {
         esbuildOptions: {
             supported: {
@@ -19,9 +20,19 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
+        outDir: "dist",
+        assetsDir: "assets"
     },
     server: {
         open: true
+    },
+
+    resolve: {
+        alias: {
+            'three': 'three',
+            'three/addons/': 'three/examples/jsm/',
+            '@three/examples': 'three/examples/jsm/'
+        }
     },
     plugins: [
         viteStaticCopy({
