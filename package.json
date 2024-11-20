@@ -11,7 +11,8 @@
     "clean": "rm -rf dist",
     "purge": "npm run clean && rm -rf node_modules",
     "serve": "http-server dist",
-    "cloud": "cloudflared --url http://localhost:5173/"
+    "cloud": "cloudflared --url http://localhost:5173/",
+    "deploy": "npm run clean && npm run build && gh-pages -d dist"
   },
   "devDependencies": {
     "@types/three": "^0.169.0",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "@iwer/devui": "^0.1.1",
+    "gh-pages": "^6.2.0",
     "iwer": "^1.0.4",
     "three": "^0.169.0"
   }
