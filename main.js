@@ -159,7 +159,8 @@ const init = () => {
     const mesh = new Mesh(geometry, material);
     mesh.position.set(0, 0, - 0.3).applyMatrix4(controller.matrixWorld);
     mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
-    scene.add(mesh);
+    // scene.add(mesh);
+    loadData();
 
   }
 
@@ -176,11 +177,10 @@ init();
 
 //
 
-/*
 function loadData() {
   new GLTFLoader()
     .setPath('assets/models/')
-    .load('test.glb', gltfReader);
+    .load('big_brain.glb', gltfReader);
 }
 
 
@@ -197,8 +197,6 @@ function gltfReader(gltf) {
   }
 }
 
-loadData();
-*/
 
 
 // camera.position.z = 3;
