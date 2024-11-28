@@ -10,10 +10,13 @@ import {
   Color,
   CylinderGeometry,
   HemisphereLight,
+  LoadingManager,
   Mesh,
+  MeshBasicMaterial,
   MeshNormalMaterial,
   MeshPhongMaterial,
   PerspectiveCamera,
+  RingGeometry,
   Scene,
   WebGLRenderer
 } from 'three';
@@ -55,6 +58,9 @@ import {
 // Example of hard link to official repo for data, if needed
 // const MODEL_PATH = 'https://raw.githubusercontent.com/mrdoob/js/r148/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb';
 
+let reticle;
+let hitTestSource = null;
+let hitTestSourceRequested = false;
 async function setupXR(xrMode) {
 
   if (xrMode !== 'immersive-vr') return;
@@ -101,11 +107,58 @@ let controller;
 const clock = new Clock();
 
 // Main loop
-const animate = () => {
+const animate = (timestamp, frame) => {
 
-  const delta = clock.getDelta();
-  const elapsed = clock.getElapsedTime();
+  // const delta = clock.getDelta();
+  // const elapsed = clock.getElapsedTime();
 
+  if (frame) {
+
+    const referenceSpace = renderer.xr.getReferenceSpace();
+    const session = renderer.xr.getSession();
+
+    if (hitTestSourceRequested === false) {
+
+      session.requestReferenceSpace('viewer').then(function (referenceSpace) {
+
+        session.requestHitTestSource({ space: referenceSpace }).then(function (source) {
+
+          hitTestSource = source;
+
+        });
+
+      });
+
+      session.addEventListener('end', function () {
+
+        hitTestSourceRequested = false;
+        hitTestSource = null;
+      });
+
+      hitTestSourceRequested = true;
+
+    }
+
+    if (hitTestSource) {
+
+      const hitTestResults = frame.getHitTestResults(hitTestSource);
+
+      if (hitTestResults.length) {
+
+        const hit = hitTestResults[0];
+
+        reticle.visible = true;
+        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+
+      } else {
+
+        reticle.visible = false;
+
+      }
+
+    }
+
+  }
   // can be used in shaders: uniforms.u_time.value = elapsed;
 
   renderer.render(scene, camera);
@@ -151,22 +204,55 @@ const init = () => {
 
   // Handle input: see THREE.js webxr_ar_cones
 
-  const geometry = new CylinderGeometry(0, 0.05, 0.2, 32).rotateX(Math.PI / 2);
+  let manager = new LoadingManager();
+
+  // let url = 'big_brain.glb';
+  manager.onProgress = function (url) {
+    if (url == 'big_brain.glb') {
+      console.log('Loading ' + url);
+    }
+    console.log(scene.children);
+  };
+
+  let loader = new GLTFLoader(manager).setPath('assets/models/')
+
+  // console.log(scene.children);
+  // let brain = scene.children[3]
+
+  // const geometry = new CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
 
   const onSelect = (event) => {
 
-    const material = new MeshPhongMaterial({ color: 0xffffff * Math.random() });
-    const mesh = new Mesh(geometry, material);
-    mesh.position.set(0, 0, - 0.3).applyMatrix4(controller.matrixWorld);
-    mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);
-    // scene.add(mesh);
-    loadData();
+    if (reticle.visible) {
 
+      // brain = loader.load('test.glb', gltfReader);
+      // console.log(loader);
+      loader.load('big_brain.glb', gltfReader);
+
+      // console.log(scene.children);
+
+      // console.log('this is brain : ' + brain);
+      // const material = new MeshPhongMaterial({ color: 0xffffff * Math.random() });
+      // const mesh = new Mesh(geometry, material);
+      // reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale)
+
+
+      // scene.add(brain);
+
+    }
   }
 
   controller = renderer.xr.getController(0);
   controller.addEventListener('select', onSelect);
   scene.add(controller);
+
+  reticle = new Mesh(
+    new RingGeometry(0.15, 0.2, 32).rotateX(- Math.PI / 2),
+    new MeshBasicMaterial()
+  );
+  reticle.matrixAutoUpdate = false;
+  reticle.visible = false;
+  scene.add(reticle);
 
 
   window.addEventListener('resize', onWindowResize, false);
@@ -175,28 +261,31 @@ const init = () => {
 
 init();
 
+
 //
 
+/*
 function loadData() {
   new GLTFLoader()
     .setPath('assets/models/')
-    .load('big_brain.glb', gltfReader);
+    .load('test.glb', gltfReader);
 }
-
+*/
 
 function gltfReader(gltf) {
-  let testModel = null;
+  let brain_obj = gltf.scene;
 
-  testModel = gltf.scene;
-
-  if (testModel != null) {
-    console.log("Model loaded:  " + testModel);
-    scene.add(gltf.scene);
+  if (brain_obj != null) {
+    console.log("Model loaded:  " + brain_obj);
+    reticle.matrix.decompose(brain_obj.position, brain_obj.quaternion, brain_obj.scale)
+    scene.add(brain_obj);
   } else {
     console.log("Load FAILED.  ");
   }
+
 }
 
+// loadData();
 
 
 // camera.position.z = 3;
