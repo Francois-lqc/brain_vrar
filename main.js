@@ -9,6 +9,7 @@ import {
   Clock,
   Color,
   CylinderGeometry,
+  Group,
   HemisphereLight,
   LoadingManager,
   Mesh,
@@ -16,6 +17,7 @@ import {
   MeshNormalMaterial,
   MeshPhongMaterial,
   PerspectiveCamera,
+  Raycaster,
   RingGeometry,
   Scene,
   WebGLRenderer
@@ -98,9 +100,7 @@ async function setupXR(xrMode) {
 await setupXR('immersive-ar');
 
 let camera, scene, renderer;
-let controller;
-
-// const clock = new Clock();
+let controller, group, raycaster;
 
 // Main loop
 const animate = (timestamp, frame) => {
@@ -162,15 +162,8 @@ const init = () => {
   renderer.xr.enabled = true;
   document.body.appendChild(renderer.domElement);
 
-  // /*
-  document.body.appendChild(XRButton.createButton(renderer, {
-    'optionalFeatures': ['depth-sensing'],
-    'depthSensing': { 'usagePreference': ['gpu-optimized'], 'dataFormatPreference': [] }
-  }));
-  // */
-
   const xrButton = XRButton.createButton(renderer, {});
-  xrButton.style.backgroundColor = 'skyblue';
+  xrButton.style.backgroundColor = 'blue';
   document.body.appendChild(xrButton);
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -201,6 +194,8 @@ const init = () => {
   controller = renderer.xr.getController(0);
   controller.addEventListener('select', onSelect);
   scene.add(controller);
+  group = new Group();
+  scene.add(group);
 
   reticle = new Mesh(
     new RingGeometry(0.15, 0.2, 32).rotateX(- Math.PI / 2),
@@ -210,6 +205,7 @@ const init = () => {
   reticle.visible = false;
   scene.add(reticle);
 
+  raycaster = new Raycaster()
 
   window.addEventListener('resize', onWindowResize, false);
 
@@ -222,13 +218,48 @@ function gltfReader(gltf) {
 
   if (brain_obj != null) {
     console.log("Model loaded:  " + brain_obj);
+    brain_obj.scale.set(0.3, 0.3, 0.3);
     reticle.matrix.decompose(brain_obj.position, brain_obj.quaternion, brain_obj.scale)
-    scene.add(brain_obj);
+    group.add(brain_obj);
   } else {
     console.log("Load FAILED.  ");
   }
 
 }
+
+
+function onSelectStart(event) {
+
+  const controller = event.target;
+
+  const intersections = getIntersections(controller);
+
+  if (intersections.length > 0) {
+
+    const intersection = intersections[0];
+
+    const object = intersection.object;
+    object.material.emissive.b = 1;
+    controller.attach(object);
+
+    controller.userData.selected = object;
+
+  }
+
+  controller.userData.targetRayMode = event.data.targetRayMode;
+
+}
+
+function getIntersections(controller) {
+
+  controller.updateMatrixWorld();
+
+  raycaster.setFromXRController(controller);
+
+  return raycaster.intersectObjects(group.children, false);
+
+}
+
 
 function onWindowResize() {
 
