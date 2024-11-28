@@ -218,7 +218,7 @@ function gltfReader(gltf) {
 
   if (brain_obj != null) {
     console.log("Model loaded:  " + brain_obj);
-    brain_obj.scale.set(0.3, 0.3, 0.3);
+    brain_obj.scale.set(0.1, 0.1, 0.1);
     reticle.matrix.decompose(brain_obj.position, brain_obj.quaternion, brain_obj.scale)
     group.add(brain_obj);
   } else {
