@@ -97,70 +97,46 @@ async function setupXR(xrMode) {
 
 await setupXR('immersive-ar');
 
-
-
-// INSERT CODE HERE
 let camera, scene, renderer;
 let controller;
 
-
-const clock = new Clock();
+// const clock = new Clock();
 
 // Main loop
 const animate = (timestamp, frame) => {
 
-  // const delta = clock.getDelta();
-  // const elapsed = clock.getElapsedTime();
-
   if (frame) {
-
     const referenceSpace = renderer.xr.getReferenceSpace();
     const session = renderer.xr.getSession();
 
     if (hitTestSourceRequested === false) {
-
       session.requestReferenceSpace('viewer').then(function (referenceSpace) {
-
         session.requestHitTestSource({ space: referenceSpace }).then(function (source) {
-
           hitTestSource = source;
-
         });
-
       });
-
       session.addEventListener('end', function () {
-
         hitTestSourceRequested = false;
         hitTestSource = null;
       });
-
       hitTestSourceRequested = true;
 
     }
 
     if (hitTestSource) {
-
       const hitTestResults = frame.getHitTestResults(hitTestSource);
 
       if (hitTestResults.length) {
-
         const hit = hitTestResults[0];
-
         reticle.visible = true;
         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
 
       } else {
-
         reticle.visible = false;
-
       }
-
     }
-
   }
   // can be used in shaders: uniforms.u_time.value = elapsed;
-
   renderer.render(scene, camera);
 };
 
@@ -186,12 +162,12 @@ const init = () => {
   renderer.xr.enabled = true;
   document.body.appendChild(renderer.domElement);
 
-  /*
-  document.body.appendChild( XRButton.createButton( renderer, {
-    'optionalFeatures': [ 'depth-sensing' ],
-    'depthSensing': { 'usagePreference': [ 'gpu-optimized' ], 'dataFormatPreference': [] }
-  } ) );
-*/
+  // /*
+  document.body.appendChild(XRButton.createButton(renderer, {
+    'optionalFeatures': ['depth-sensing'],
+    'depthSensing': { 'usagePreference': ['gpu-optimized'], 'dataFormatPreference': [] }
+  }));
+  // */
 
   const xrButton = XRButton.createButton(renderer, {});
   xrButton.style.backgroundColor = 'skyblue';
@@ -206,7 +182,6 @@ const init = () => {
 
   let manager = new LoadingManager();
 
-  // let url = 'big_brain.glb';
   manager.onProgress = function (url) {
     if (url == 'big_brain.glb') {
       console.log('Loading ' + url);
@@ -216,29 +191,10 @@ const init = () => {
 
   let loader = new GLTFLoader(manager).setPath('assets/models/')
 
-  // console.log(scene.children);
-  // let brain = scene.children[3]
-
-  // const geometry = new CylinderGeometry(0.1, 0.1, 0.2, 32).translate(0, 0.1, 0);
-
   const onSelect = (event) => {
 
     if (reticle.visible) {
-
-      // brain = loader.load('test.glb', gltfReader);
-      // console.log(loader);
       loader.load('big_brain.glb', gltfReader);
-
-      // console.log(scene.children);
-
-      // console.log('this is brain : ' + brain);
-      // const material = new MeshPhongMaterial({ color: 0xffffff * Math.random() });
-      // const mesh = new Mesh(geometry, material);
-      // reticle.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale)
-
-
-      // scene.add(brain);
-
     }
   }
 
@@ -261,17 +217,6 @@ const init = () => {
 
 init();
 
-
-//
-
-/*
-function loadData() {
-  new GLTFLoader()
-    .setPath('assets/models/')
-    .load('test.glb', gltfReader);
-}
-*/
-
 function gltfReader(gltf) {
   let brain_obj = gltf.scene;
 
@@ -284,14 +229,6 @@ function gltfReader(gltf) {
   }
 
 }
-
-// loadData();
-
-
-// camera.position.z = 3;
-
-
-
 
 function onWindowResize() {
 
