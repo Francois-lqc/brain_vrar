@@ -20,6 +20,7 @@ import {
   Raycaster,
   RingGeometry,
   Scene,
+  Vector3,
   WebGLRenderer
 } from 'three';
 
@@ -63,6 +64,8 @@ import {
 let reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
+let objectScaled = [];
+
 async function setupXR(xrMode) {
 
   if (xrMode !== 'immersive-vr') return;
@@ -100,7 +103,7 @@ async function setupXR(xrMode) {
 await setupXR('immersive-ar');
 
 let camera, scene, renderer;
-let controller, controller2, group, raycaster;
+let controller, group, raycaster;
 
 // Main loop
 const animate = (timestamp, frame) => {
@@ -188,7 +191,6 @@ const init = () => {
 
     if (reticle.visible) {
 
-
       if (isCerveauSpawn == false) {
         loader.load('big_brain.glb', gltfReader);
         isCerveauSpawn = true;
@@ -206,34 +208,26 @@ const init = () => {
         const intersection = intersections[0];
 
         const object = intersection.object;
-        //  object.material.emissive.b = 1;
-        // controller.attach(object);
+        object.material.emissive.b = 1;
 
         controller.userData.selected = object;
-        targetObject = brain.getObjectByName(object.name).parent;
+        targetObject = object.parent;
         console.log('J\'ai intercepté un object ' + targetObject.name);
-
-        group.add(targetObject);
       }
       if (targetObject) {
         // add clicked object to the scaled objects array
         objectScaled.push(targetObject);
         // Compute camera position
-        const targetWorldPosition = new THREE.Vector3();
-        targetObject.getWorldPosition(targetWorldPosition);
 
         // brain_rotate = false;
 
-        // objectNameDiv.innerHTML = `${descriptions[targetObject.name]}`;
-        // objectNameDiv.style.visibility = 'visible';
         // Make object 10% bigger
         targetObject.scale.set(targetObject.scale.x + 0.1, targetObject.scale.y + 0.1, targetObject.scale.z + 0.1)
       }
       else {
         // brain_rotate = true;
-        // objectNameDiv.style.visibility = 'hidden';
         // To revert back scaled object
-        objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); group.remove(object) });
+        objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); });
         objectScaled = [];
       }
       controller.userData.targetRayMode = event.data.targetRayMode;
@@ -264,66 +258,20 @@ const init = () => {
 
 init();
 
+let brain_obj;
 function gltfReader(gltf) {
-  let brain_obj = gltf.scene;
+  brain_obj = gltf.scene;
 
   if (brain_obj != null) {
     console.log("Model loaded:  " + brain_obj);
     brain_obj.scale.set(0.1, 0.1, 0.1);
     reticle.matrix.decompose(brain_obj.position, brain_obj.quaternion, brain_obj.scale)
     group.add(brain_obj);
+    console.log(brain_obj);
   } else {
     console.log("Load FAILED.  ");
   }
 
-}
-
-let objectScaled = [];
-function onSelectObject(event) {
-
-  // let targetObject = null;
-  // const controller = event.target;
-
-  // // fonction qui me récupère tous les objets sur lesquels j'ai cliqué
-  // const intersections = getIntersections(controller);
-
-  // if (intersections.length > 0) {
-  //   // si j'ai cliqué sur une liste d'objets, faire l'action que je veux
-  //   console.log('J\'ai intercepté un object');
-
-  //   const intersection = intersections[0];
-
-  //   const object = intersection.object;
-  //   object.material.emissive.b = 1;
-  //   // controller.attach(object);
-
-  //   controller.userData.selected = object;
-  //   targetObject = brain.getObjectByName(object.name).parent;
-
-  //   group.add(targetObject);
-  // }
-  // if (targetObject) {
-  //   // add clicked object to the scaled objects array
-  //   objectScaled.push(targetObject);
-  //   // Compute camera position
-  //   const targetWorldPosition = new THREE.Vector3();
-  //   targetObject.getWorldPosition(targetWorldPosition);
-
-  //   // brain_rotate = false;
-
-  //   // objectNameDiv.innerHTML = `${descriptions[targetObject.name]}`;
-  //   // objectNameDiv.style.visibility = 'visible';
-  //   // Make object 10% bigger
-  //   targetObject.scale.set(targetObject.scale.x + 0.1, targetObject.scale.y + 0.1, targetObject.scale.z + 0.1)
-  // }
-  // else {
-  //   // brain_rotate = true;
-  //   // objectNameDiv.style.visibility = 'hidden';
-  //   // To revert back scaled object
-  //   objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); group.remove(object) });
-  //   objectScaled = [];
-  // }
-  // controller.userData.targetRayMode = event.data.targetRayMode;
 }
 
 function getIntersections(controller) {
@@ -332,16 +280,13 @@ function getIntersections(controller) {
 
   raycaster.setFromXRController(controller);
 
-  return raycaster.intersectObjects(group.children, false);
+  return raycaster.intersectObjects(group.children, true);
 
 }
 
-
 function onWindowResize() {
-
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-
 }
