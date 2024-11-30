@@ -57,8 +57,8 @@ function makeTextPanel(title, text, object_position) {
 
   console.log('making panel');
   const container = new Block({
-    width: 10,
-    height: 5,
+    width: 100,
+    height: 50,
     padding: 0.05,
     justifyContent: 'center',
     textAlign: 'left',
@@ -66,12 +66,6 @@ function makeTextPanel(title, text, object_position) {
     // fontTexture: './assets/Roboto-msdf.png',
 
   });
-
-  container.position.set(object_position.position);
-  container.rotation.x = -0.55;
-  scene.add(container);
-
-  //
 
   container.add(
     new Text({
@@ -85,6 +79,12 @@ function makeTextPanel(title, text, object_position) {
       fontSize: 0.08
     })
   );
+
+
+  container.position.set(object_position.position.x + 1, object_position.position.y + 1, object_position.position.z + 1);
+  container.rotation.x = -0.55;
+  scene.add(container);
+
   console.log('making text');
 
   return container;
@@ -264,8 +264,10 @@ const init = () => {
         console.log('J\'ai intercepté un object ' + targetObject.name);
       }
       if (targetObject) {
-        let container = makeTextPanel(targetObject.name, infos[targetObject.name], targetObject)
+        let container = makeTextPanel(targetObject.name, infos[targetObject.name], brain_obj)
         console.log(container);
+        console.log('brain');
+        console.log(brain_obj.position);
         // add clicked object to the scaled objects array
         objectScaled.push(targetObject);
         // Compute camera position
@@ -288,7 +290,6 @@ const init = () => {
 
   controller = renderer.xr.getController(0);
   controller.addEventListener('select', onSelect);
-  // controller.addEventListener('select', onSelectObject);
   scene.add(controller);
   group = new Group();
   scene.add(group);
