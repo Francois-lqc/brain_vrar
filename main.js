@@ -5,28 +5,20 @@ import {
   Audio,
   AudioLoader,
   AudioListener,
-  BoxGeometry,
   Clock,
-  Color,
-  CylinderGeometry,
   Group,
   HemisphereLight,
   LoadingManager,
   Mesh,
   MeshBasicMaterial,
-  MeshNormalMaterial,
-  MeshPhongMaterial,
   PerspectiveCamera,
-  PlaneGeometry,
   Raycaster,
   RingGeometry,
   Scene,
-  Vector3,
   WebGLRenderer
 } from 'three';
 
 // XR Emulator
-import { Text, Block } from 'three-mesh-ui';
 import { DevUI } from '@iwer/devui';
 import { XRDevice, metaQuest3 } from 'iwer';
 
@@ -41,57 +33,8 @@ import {
   GLTFLoader
 } from 'three/addons/loaders/GLTFLoader.js';
 
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 
 import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
-
-const fontLoader = new FontLoader();
-const font = fontLoader.load('assets/Roboto-msdf.json');
-
-function makeTextPanel(title, text, object_position) {
-
-  const container = new Block({
-    width: 100,
-    height: 50,
-    padding: 0.05,
-    justifyContent: 'center',
-    textAlign: 'left',
-    fontFamily: font,
-    // fontTexture: './assets/Roboto-msdf.png',
-
-  });
-
-  var plane = new Mesh(
-    new PlaneGeometry(container.width, container.height),
-    new MeshBasicMaterial({ color: 0xff9900 })
-  );
-
-  container.position.set(object_position.position.x + 1, object_position.position.y + 1, object_position.position.z + 1);
-  container.rotation.x = -0.55;
-
-  plane.position.set(container.position)
-
-  scene.add(container);
-
-  container.add(
-    new Text({
-      // content: 'This library supports line-break-friendly-characters,',
-      content: title,
-      fontSize: 50,
-      fontColor: 'white',
-    }),
-
-    new Text({
-      content: text,
-      fontSize: 50,
-      fontColor: 'white',
-    })
-  );
-
-  container.add(plane)
-
-  return container;
-}
 
 let reticle;
 let hitTestSource = null;
@@ -270,9 +213,6 @@ const init = () => {
       if (targetObject) {
         if (objectScaled != null) {
           // To revert back scaled object
-          // objectScaled.forEach(object => {
-          //   object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1);
-          // });
           objectScaled.scale.set(objectScaled.scale.x - 0.1, objectScaled.scale.y - 0.1, objectScaled.scale.z - 0.1);
           infomesh.visible = false;
           objectScaled = null;
@@ -281,13 +221,6 @@ const init = () => {
         infomesh = new HTMLMesh(info);
         infomesh.position.set(brain_obj.position.x + 1, brain_obj.position.y + 1, brain_obj.position.z + 1);
         scene.add(infomesh);
-        // let container = makeTextPanel(targetObject.name, infos[targetObject.name], brain_obj)
-        // console.log(container);
-        // console.log('brain');
-        // console.log(brain_obj.position);
-        // add clicked object to the scaled objects array
-        // objectScaled.push(targetObject);
-        // Compute camera position
 
         brain_rotate = false;
 
@@ -302,11 +235,6 @@ const init = () => {
           infomesh.visible = false;
         }
         brain_rotate = true;
-        //   // To revert back scaled object
-        //   objectScaled.scale(objectScaled.scale.x - 0.1, objectScaled.scale.y - 0.1, objectScaled.scale.z - 0.1);
-        //   objectScaled = null;
-        //   // objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); });
-        //   // objectScaled = [];
       }
       controller.userData.targetRayMode = event.data.targetRayMode;
 

@@ -12,14 +12,12 @@ div {
 .Frontal_Lobe {
   position: relative;
   height: fit-content;
-  visibility: hidden;
   display: none;
 }
 
 .Parietal_Lobe {
   position: relative;
   height: fit-content;
-  visibility: hidden;
   display: none;
 
 }
@@ -27,7 +25,6 @@ div {
 .Temporal_Lobe {
   position: relative;
   height: fit-content;
-  visibility: hidden;
   display: none;
 
 }
@@ -35,6 +32,5 @@ div {
 .Occipital_Lobe {
   position: relative;
   height: fit-content;
-  visibility: hidden;
   display: none;
 }
