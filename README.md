@@ -1,136 +1,66 @@
-# three_vite_xr
-THREE.js + WebXR template using [Vite](https://vitejs.dev).
+# Brain 3D Learning & Stimulation
 
-Allows testing and modifying [official THREE.js WebXR examples](https://threejs.org/examples/?q=webxr) locally, at lightning speed.
+An interactive tool developed with [Three.js](https://threejs.org/) for learning and exploring different areas of the human brain in 3D. This project allows users not only to visualize brain regions but also to stimulate each area in their own brain (not complete for now).
 
-## Batteries included
+## Link to test the application in live
+Here is the limk : https://francois-lqc.github.io/brain_vrar/
 
-Pre-configured to support :
+## Features
+- **Interactive 3D Exploration:** Navigate and explore a detailed 3D brain model.
 
-- WebXR initialization
-- glTF file loading
-- ammo.js wasm physics library
-  - which is fast, but you might consider using the excellent and simpler [Cannon-es](https://fdoganis.github.io/slides/cannon.html) instead
-- VSCode launch scripts
-- THREE.js type definitions : for IntelliSense in VS Code
-- recommended VS Code extensions
-- deployment
+- **Brain Area Information:** Click on an area to display descriptive information about it.
 
-Have a look at vite.config.js and customize it to your needs (additional libraries, file formats etc.).
+- **Area Stimulation:** The area chosen can be stimulated in your brain with a little game.
+
 
 ## Installation
-
-Install [Node.js](https://nodejs.org)
-
-- Clone or download repo
-- run `npm install` : fetches and install all dependencies
-- `npm run dev` : launches a server and opens your browser in `https://localhost:5173` by default
-  - Edit your code : your changes are reflected instantly!
-- `npm run build` : packages all code and resources into the `dist` folder, ready for deployment.
-
-
-## HTTPS
-
-HTTPS is required to use the WebXR API
-
-
-### Using Cloudflare Tunnel for free without an account or a domain (recommended)
-
-  - Install [Homebrew](https://brew.sh)
-
+### Clone the repository:
 ```bash
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+git clone https://github.com/Francois-lqc/brain_vrar.git
 ```
 
-then follow instructions
-
-
+### Navigate to the project folder:
 ```bash
-echo >> /Users/XXX/.zprofile
-
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/XXX/.zprofile
-
-eval "$(/opt/homebrew/bin/brew shellenv)"
+cd brain_vrar
 ```
 
-  - **[Install `cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)**
-
+### Install dependencies
+Make sure you have Node.js and npm installed before running this command
 ```bash
-brew install cloudflared
+npm install
 ```
-- run your app locally
 
+### Run the application:
 ```bash
 npm run dev
 ```
 
-- run `cloudflared` tunnel
+## Usage
+- **Exploration:** Use the mouse to rotate and zoom in on the 3D brain model.
 
-```bash
-cloudflared --url http://localhost:5173/
-```
+- **Area Selection:** Click on a brain region to view description.
 
-This will create a random temporary address ending in `*.trycloudflare.com`
+- **Stimulation:** Click on a button to trigger a game stimulating this area in your brain.
 
-You can share this address by sending a link or by generating a QR code (very useful for mobile devices and some XR headsets).
+## Technologies Used
+- **Three.js:** With WebXR and Vite, used for the 3D / AR part.
 
-### Persistent link
+- **JavaScript:** The main language for implementing logic.
 
-If you want more persistence, you should register a domain name, or connect your github account to [Cloudflare Pages](https://pages.cloudflare.com) for free.
+- **HTML/CSS:** For the base of the application
 
-Alternatively, you could simply [use GitHub Pages to host your application persistently](https://sbcode.net/threejs/github-pages/).
+## Credits
 
-### Tunneling alternatives
+- Music / Sound came from:
+  - Background music:  [Perfect Beauty](https://pixabay.com/fr/music/impulsions-perfect-beauty-191271/) from Pixabay
+  - Audio stimulation music: [Musique Symphonique](https://www.youtube.com/watch?v=nWElBRjYT8U) from Youtube
 
-Check these tunneling alternatives such as `ngrok` or `zrok` for simple personal projects, use [tunneling solutions](https://github.com/anderspitman/awesome-tunneling) 
-
-
-### Manual HTTPS setup
-
-In order to use `https`, copy your certificates to the `.cert` folder, and change the `serve` command to:
-
-`"serve": "http-server dist -S -C .cert/cert.pem -K .cert/key.pem`
-
-## Deploying the App with GitHub Pages
-
-(original: https://github.com/meta-quest/webxr-first-steps?tab=readme-ov-file#build-and-deploy)
-
-This repository includes a ready-to-use GitHub Actions workflow located at `.github/workflows/deploy.yml`, which automates both the build and deployment to GitHub Pages. Once enabled, every time you push changes to the `main` branch, a new build will automatically be deployed.
-
-#### Steps to Enable GitHub Pages Deployment:
-
-0. **IMPORTANT: Set the `base` variable** in `vite.config.js` (default name `/three_vite_xr`) to the actual name of your repository. Your app will be deployed to https://[GITUSERNAME].github.io/[REPOSITORY_NAME] (for example https://fdoganis.github.io/three_vite_xr)
-1. **Fork this repository** to your own GitHub account.
-2. Navigate to your forked repository’s **Settings**.
-3. Scroll down to the **Pages** section.
-4. Under **Build and Deployment**, change the **Source** to **GitHub Actions**.
-
-Once this is set, GitHub Actions will handle the build and deployment process automatically. Any time you push changes to the `main` branch, the app will be built and deployed to GitHub Pages without any additional manual steps.
-
-You can monitor the status of the deployment job or manually re-run it via the **Actions** tab in your GitHub repository.
-
-### Deploying to Your Own Hosting Solution
-
-If you prefer to host the app yourself, you’ll need to manually build the app and then deploy the generated files to your hosting provider.
-
-To generate the build, run the following command:
-
-```bash
-npm run build
-```
-
-This will create a `dist` folder containing the static files for the app. You can then upload these files to your hosting platform of choice.
+- Models *([Box](https://sketchfab.com/3d-models/empty-wooden-treasure-chest-613238aa14a64797aae04a0ce18a0003), [Coin](https://sketchfab.com/3d-models/coin-dfa5d2e83f9f4cb4a53fe6f109f3dbb8), [Brain](https://sketchfab.com/3d-models/color-coded-labeled-major-lobes-of-the-brain-2e0c39b0ec834469a629a216ca954686))* came from [Sketchfab](https://sketchfab.com/)
 
 
-# Credits
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-- XR enhanced version of the original ```three_vite``` template : https://github.com/fdoganis/three_vite (MIT License)
-  
-- THREE.js WebXR code inspired by https://threejs.org/examples/webxr_ar_cones.html (MIT License)
-
-- Test model (red cube) from https://github.com/cx20/gltf-test/tree/master/sampleModels/Box (CC BY License)
-
-- Some very interesting features (emulator, github pages deployment) have been borrowed from https://github.com/meta-quest/webxr-first-steps  (MIT License)
-
-  - Make sure to check this excellent tutorial out! Even if it is mostly focused on VR, it is a great introduction on how to combine WebXR with THREE.js.
-  - See [Deployment Instructions](https://github.com/meta-quest/webxr-first-steps?tab=readme-ov-file#build-and-deploy)
+## Members
+- François Le Quellec
+- Pauline Marsaudon
