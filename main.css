@@ -4,3 +4,37 @@ body {
   padding: 0;
   overflow: hidden;
 }
+
+div {
+  font-size: larger;
+}
+
+.Frontal_Lobe {
+  position: relative;
+  height: fit-content;
+  visibility: hidden;
+  display: none;
+}
+
+.Parietal_Lobe {
+  position: relative;
+  height: fit-content;
+  visibility: hidden;
+  display: none;
+
+}
+
+.Temporal_Lobe {
+  position: relative;
+  height: fit-content;
+  visibility: hidden;
+  display: none;
+
+}
+
+.Occipital_Lobe {
+  position: relative;
+  height: fit-content;
+  visibility: hidden;
+  display: none;
+}

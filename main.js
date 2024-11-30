@@ -43,15 +43,10 @@ import {
 
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 
+import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
+
 const fontLoader = new FontLoader();
 const font = fontLoader.load('assets/Roboto-msdf.json');
-
-const infos = {
-  'Frontal_Lobe': 'Lobe Frontal : <br> Situé à l\'avant du cerveau, le lobe frontal est impliqué dans des fonctions complexes comme la prise de décision, le raisonnement, la planification, le mouvement volontaire et le contrôle des impulsions.Il joue aussi un rôle crucial dans la régulation des émotions, la personnalité, et le langage(surtout dans l\'hémisphère gauche avec l\'aire de Broca).<br> Vous pouvez écouter la musique du menu ou lancer le jeu musical pour stimuler cette partie du cerveau.',
-  'Parietal_Lobe': 'Lobe Pariétal : <br> Situé au sommet du cerveau, le lobe pariétal traite principalement les informations sensorielles provenant de différentes parties du corps, comme la température, la douleur, le toucher et la position spatiale.Il est essentiel pour l\'intégration sensorielle et la perception spatiale, contribuant également aux mouvements complexes et à la reconnaissance des objets.<br> Vous pouvez jouer au jeu du trésor pour stimuler cette partie du cerveau.',
-  'Temporal_Lobe': 'Lobe Temporal : <br> Ce lobe, situé au niveau des tempes, est principalement responsable de la perception auditive et de la compréhension du langage(notamment via l\'aire de Wernicke). Il joue également un rôle dans la mémoire à long terme et est impliqué dans la reconnaissance des visages et des émotions.<br> Vous pouvez jouer au jeu des cartes pour stimuler cette partie du cerveau.',
-  'Occipital_Lobe': 'Lobe Occipital : <br> Localisé à l\'arrière du cerveau, le lobe occipital est principalement dédié au traitement des informations visuelles. Il reçoit les signaux en provenance des yeux et les interprète, nous permettant ainsi de percevoir et d\'identifier les formes, les couleurs, les mouvements et les objets dans notre environnement.<br> Vous pouvez jouer au jeu des couleurs pour stimuler cette partie du cerveau.',
-};
 
 function makeTextPanel(title, text, object_position) {
 
@@ -101,7 +96,8 @@ function makeTextPanel(title, text, object_position) {
 let reticle;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
-let objectScaled = [];
+let objectScaled;
+let info, infomesh;
 
 async function setupXR(xrMode) {
 
@@ -272,24 +268,45 @@ const init = () => {
         console.log('J\'ai intercepté un object ' + targetObject.name);
       }
       if (targetObject) {
-        let container = makeTextPanel(targetObject.name, infos[targetObject.name], brain_obj)
-        console.log(container);
-        console.log('brain');
-        console.log(brain_obj.position);
+        if (objectScaled != null) {
+          // To revert back scaled object
+          // objectScaled.forEach(object => {
+          //   object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1);
+          // });
+          objectScaled.scale.set(objectScaled.scale.x - 0.1, objectScaled.scale.y - 0.1, objectScaled.scale.z - 0.1);
+          infomesh.visible = false;
+          objectScaled = null;
+        }
+        info = document.getElementById(targetObject.name);
+        infomesh = new HTMLMesh(info);
+        infomesh.position.set(brain_obj.position.x + 1, brain_obj.position.y + 1, brain_obj.position.z + 1);
+        scene.add(infomesh);
+        // let container = makeTextPanel(targetObject.name, infos[targetObject.name], brain_obj)
+        // console.log(container);
+        // console.log('brain');
+        // console.log(brain_obj.position);
         // add clicked object to the scaled objects array
-        objectScaled.push(targetObject);
+        // objectScaled.push(targetObject);
         // Compute camera position
 
         brain_rotate = false;
 
         // Make object 10% bigger
         targetObject.scale.set(targetObject.scale.x + 0.1, targetObject.scale.y + 0.1, targetObject.scale.z + 0.1)
+        objectScaled = targetObject;
       }
       else {
+        if (objectScaled != null) {
+          objectScaled.scale.set(objectScaled.scale.x - 0.1, objectScaled.scale.y - 0.1, objectScaled.scale.z - 0.1);
+          objectScaled = null;
+          infomesh.visible = false;
+        }
         brain_rotate = true;
-        // To revert back scaled object
-        objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); });
-        objectScaled = [];
+        //   // To revert back scaled object
+        //   objectScaled.scale(objectScaled.scale.x - 0.1, objectScaled.scale.y - 0.1, objectScaled.scale.z - 0.1);
+        //   objectScaled = null;
+        //   // objectScaled.forEach(object => { object.scale.set(object.scale.x - 0.1, object.scale.y - 0.1, object.scale.z - 0.1); });
+        //   // objectScaled = [];
       }
       controller.userData.targetRayMode = event.data.targetRayMode;
 
