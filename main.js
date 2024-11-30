@@ -2,6 +2,9 @@
 
 import {
   AmbientLight,
+  Audio,
+  AudioLoader,
+  AudioListener,
   BoxGeometry,
   Clock,
   Color,
