@@ -55,7 +55,6 @@ const infos = {
 
 function makeTextPanel(title, text, object_position) {
 
-  console.log('making panel');
   const container = new Block({
     width: 100,
     height: 50,
@@ -67,25 +66,34 @@ function makeTextPanel(title, text, object_position) {
 
   });
 
+  var plane = new Mesh(
+    new PlaneGeometry(container.width, container.height),
+    new MeshBasicMaterial({ color: 0xff9900 })
+  );
+
+  container.position.set(object_position.position.x + 1, object_position.position.y + 1, object_position.position.z + 1);
+  container.rotation.x = -0.55;
+
+  plane.position.set(container.position)
+
+  scene.add(container);
+
   container.add(
     new Text({
       // content: 'This library supports line-break-friendly-characters,',
       content: title,
-      fontSize: 0.1
+      fontSize: 50,
+      fontColor: 'white',
     }),
 
     new Text({
       content: text,
-      fontSize: 0.08
+      fontSize: 50,
+      fontColor: 'white',
     })
   );
 
-
-  container.position.set(object_position.position.x + 1, object_position.position.y + 1, object_position.position.z + 1);
-  container.rotation.x = -0.55;
-  scene.add(container);
-
-  console.log('making text');
+  container.add(plane)
 
   return container;
 }
